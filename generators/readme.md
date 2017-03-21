@@ -1,4 +1,4 @@
-#Generators
+# Generators
 
 > ES2015
 
@@ -78,14 +78,6 @@ function* bar() {
 
 ```js
 genObj.next('a');
-```
-
-#### The first next()
-
-```js
-  > function* g() { yield }
-  > g().next('hello')
-  TypeError: attempt to send 'hello' to newborn generator
 ```
 
 #### yield binds loosely
