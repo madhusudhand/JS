@@ -139,6 +139,103 @@ console.log( it.next( 13 ) );   // { value:42, done:true }
 
 
 
+## Going Async
+
+A simple wrapper
+
+```js
+
+function wrapper(fn){
+  return function() {
+    var gen = fn.apply(this, arguments);
+    var v = gen.next();
+    gen.next(value);
+  }
+}
+
+var hello = wrapper(function* () {
+    console.log('start');
+    var x = yield 1;
+    console.log(x);
+    console.log('end');
+});
+
+hello();
+
+```
+
+
+Going async with Promises
+
+```js
+
+function wrapper(fn){
+  return function() {
+    var gen = fn.apply(this, arguments);
+    function step(value) {
+      var v = gen.next(value);
+      if (v.done) return Promise.resolve(v.value);
+
+      return Promise.resolve(v.value).then((value) => {
+        // gen.next(value);
+        return step(value);
+      });
+    }
+
+    step();
+  }
+}
+
+
+var hello = wrapper(function* () {
+    console.log('start');
+    
+    var x = yield Promise.resolve(10);
+    console.log('x resolved');
+    
+    var y = yield Promise.resolve(20);
+    console.log('y resolved');
+    
+    console.log(x+y);
+    
+    console.log('end');
+});
+
+hello();
+
+```
+
+
+
+Forget everything, lets make it simple.
+
+```js
+
+async hello() {
+  console.log('start');
+    
+  var x = await Promise.resolve(10);
+  console.log('x resolved');
+
+  var y = await Promise.resolve(20);
+  console.log('y resolved');
+
+  console.log(x+y);
+
+  console.log('end');
+}
+
+
+hello();
+
+```
+
+
+Which is exactly same as above generator implementation.
+
+
+
+
 ## References
 
 1. http://www.2ality.com/2015/03/es6-generators.html
